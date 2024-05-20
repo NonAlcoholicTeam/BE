@@ -2,6 +2,7 @@ package com.example.postgres.service;
 
 import com.example.postgres.dto.EmployeeDto;
 import com.example.postgres.entity.Employee;
+import com.example.postgres.exception.ResourceNotFoundException;
 import com.example.postgres.mapper.EmployeeMapper;
 import com.example.postgres.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional(readOnly = true)
     @Override
     public EmployeeDto getEmployeeById(Long employeeId) {
-        return null;
+        Employee employee = employeeRepository.findById(employeeId).
+                orElseThrow(() -> new ResourceNotFoundException(
+                        "조회하려는 " + employeeId + "번의 ID의 직원이 없습니다.")
+                );
+
+        return EmployeeMapper.mapToEmployeeDto(employee);
     }
 }

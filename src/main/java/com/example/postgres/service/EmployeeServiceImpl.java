@@ -30,7 +30,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDto getEmployeeById(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId).
                 orElseThrow(() -> new ResourceNotFoundException(
-                        "조회하려는 " + employeeId + "번의 ID의 직원이 없습니다.")
+                        "조회하려는 " + employeeId + "번 ID의 직원이 없습니다.")
                 );
 
         return EmployeeMapper.mapToEmployeeDto(employee);

@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Transactional
 @Service
 @AllArgsConstructor
@@ -34,5 +36,12 @@ public class EmployeeServiceImpl implements EmployeeService {
                 );
 
         return EmployeeMapper.mapToEmployeeDto(employee);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<EmployeeDto> getAllEmployees() {
+        List<Employee> employees = employeeRepository.findAll();
+        return employees.stream().map(EmployeeMapper::mapToEmployeeDto).toList();
     }
 }

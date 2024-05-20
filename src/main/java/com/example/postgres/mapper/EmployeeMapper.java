@@ -16,5 +16,13 @@ public class EmployeeMapper {
         );
     }
 
-
+    // dto -> entity
+    public static Employee mapTOEmployee(EmployeeDto employeeDto) {
+        return new Employee(
+                employeeDto.getId(),
+                employeeDto.getFirstName(),
+                employeeDto.getLastName(),
+                employeeDto.getEmail()
+        );
+    }
 }

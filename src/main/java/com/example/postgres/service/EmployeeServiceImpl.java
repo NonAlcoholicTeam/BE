@@ -48,7 +48,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee) {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(
-                () -> new ResourceNotFoundException("주어진 " + employeeId + "번 ID가 존재하지 않습니다")
+                () -> new ResourceNotFoundException("수정하려는 " + employeeId + "번 ID가 존재하지 않습니다")
         );
 
         employee.setFirstName(updatedEmployee.getFirstName());
@@ -58,5 +58,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee updatedEmployeeObj = employeeRepository.save(employee);
 
         return EmployeeMapper.mapToEmployeeDto(updatedEmployeeObj);
+    }
+
+    @Override
+    public void deleteEmployee(Long employeeId) {
+        employeeRepository.findById(employeeId).orElseThrow(
+                () -> new ResourceNotFoundException("삭제하려는 " + employeeId + "번 ID가 존재하지 않습니다")
+        );
+
+        employeeRepository.deleteById(employeeId);
     }
 }

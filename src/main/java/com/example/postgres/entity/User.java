@@ -1,5 +1,6 @@
 package com.example.postgres.entity;
 
+import com.example.postgres.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,4 +28,10 @@ public class User {
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    public void updateUser(UserDto userDto) {
+        this.firstName = userDto.getFirstName();
+        this.lastName = userDto.getLastName();
+        this.email = userDto.getEmail();
+    }
 }

@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserById(Long userId) {
         User user = userRepository.findById(userId).
                 orElseThrow(() -> new ResourceNotFoundException(
-                        "조회하려는 " + userId + "번 ID의 직원이 없습니다.")
+                        "조회하려는 " + userId + "번 ID의 회원이 없습니다.")
                 );
 
         return UserMapper.mapToEmployeeDto(user);
@@ -51,9 +51,7 @@ public class UserServiceImpl implements UserService {
                 () -> new ResourceNotFoundException("수정하려는 " + userId + "번 ID가 존재하지 않습니다")
         );
 
-        user.setFirstName(updatedUser.getFirstName());
-        user.setLastName(updatedUser.getLastName());
-        user.setEmail(updatedUser.getEmail());
+        user.updateUser(updatedUser);
 
         User updatedUserObj = userRepository.save(user);
 

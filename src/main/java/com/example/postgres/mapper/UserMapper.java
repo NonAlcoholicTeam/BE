@@ -10,9 +10,9 @@ public class UserMapper {
     public static UserDto mapToEmployeeDto(User user) {
         return new UserDto(
                 user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail()
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword()
         );
     }
 
@@ -20,9 +20,9 @@ public class UserMapper {
     public static User mapTOEmployee(UserDto userDto) {
         return new User(
                 userDto.getId(),
-                userDto.getFirstName(),
-                userDto.getLastName(),
-                userDto.getEmail()
+                userDto.getUsername(),
+                userDto.getEmail(),
+                userDto.getPassword()
         );
     }
 }

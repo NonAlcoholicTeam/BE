@@ -20,18 +20,18 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "user_name")
+    private String username;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "password")
+    private String password;
+
     public void updateUser(UserDto userDto) {
-        this.firstName = userDto.getFirstName();
-        this.lastName = userDto.getLastName();
+        this.username = userDto.getUsername();
+        this.password = userDto.getPassword();
         this.email = userDto.getEmail();
     }
 }

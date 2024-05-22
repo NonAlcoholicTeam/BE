@@ -1,9 +1,9 @@
 package com.example.postgres.repository;
 
-import com.example.postgres.entity.Employee;
+import com.example.postgres.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 }

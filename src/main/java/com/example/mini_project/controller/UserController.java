@@ -11,44 +11,46 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/employees")
+@RequestMapping("/mini/user")
 public class UserController {
 
     private final UserService userService;
 
-    // Add Employee
+    // Add Employee(Sign uo)
     @PostMapping
     public ResponseEntity<UserDto> createEmployee(@RequestBody UserDto userDto) {
         UserDto savedEmployee = userService.createUser(userDto);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
-    // Get Employee
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDto> getEmployeeById(@PathVariable Long userId) {
-        UserDto employee = userService.getUserById(userId);
-        return ResponseEntity.ok(employee);
-    }
-
-    // Get All Employees
-    @GetMapping
-    public ResponseEntity<List<UserDto>> getAllEmployees() {
-        List<UserDto> allEmployees = userService.getAllUsers();
-        return ResponseEntity.ok(allEmployees);
-    }
-
-    // Update Employee
-    @PutMapping("/{userId}")
-    public ResponseEntity<UserDto> updateEmployee(@PathVariable Long userId,
-                                                  @RequestBody UserDto updatedEmployee) {
-        UserDto userDto = userService.updateUser(userId, updatedEmployee);
-        return ResponseEntity.ok(userDto);
-    }
-
-    // Delete Employee
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable Long userId) {
-        userService.deleteUser(userId);
-        return ResponseEntity.ok(userId + "번 ID의 회원 정보가 성공적으로 삭제됐습니다.");
-    }
+    //TODO: 회원정보 RUD
+//    // Get Employee
+//    @GetMapping("/{userId}")
+//    public ResponseEntity<UserDto> getEmployeeById(@PathVariable Long userId) {
+//        UserDto employee = userService.getUserById(userId);
+//        return ResponseEntity.ok(employee);
+//    }
+//
+//
+//    // Get All Employees
+//    @GetMapping
+//    public ResponseEntity<List<UserDto>> getAllEmployees() {
+//        List<UserDto> allEmployees = userService.getAllUsers();
+//        return ResponseEntity.ok(allEmployees);
+//    }
+//
+//    // Update Employee
+//    @PutMapping("/{userId}")
+//    public ResponseEntity<UserDto> updateEmployee(@PathVariable Long userId,
+//                                                  @RequestBody UserDto updatedEmployee) {
+//        UserDto userDto = userService.updateUser(userId, updatedEmployee);
+//        return ResponseEntity.ok(userDto);
+//    }
+//
+//    // Delete Employee
+//    @DeleteMapping("/{userId}")
+//    public ResponseEntity<String> deleteEmployee(@PathVariable Long userId) {
+//        userService.deleteUser(userId);
+//        return ResponseEntity.ok(userId + "번 ID의 회원 정보가 성공적으로 삭제됐습니다.");
+//    }
 }

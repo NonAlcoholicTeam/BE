@@ -6,12 +6,14 @@ import com.example.mini_project.exception.ResourceNotFoundException;
 import com.example.mini_project.mapper.UserMapper;
 import com.example.mini_project.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Transactional
 @Service
 @AllArgsConstructor
@@ -23,7 +25,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
 
+        log.info(userDto.getEmail());
         User user = UserMapper.mapTOEmployee(userDto, passwordEncoder);
+        log.info(userDto.getEmail());
         User savedUser = userRepository.save(user);
 
         return UserMapper.mapToEmployeeDto(savedUser);

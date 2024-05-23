@@ -17,7 +17,7 @@ public class UserController {
     private final UserService userService;
 
     // Add Employee(Sign uo)
-    @PostMapping
+    @PostMapping("/signup")
     public ResponseEntity<UserDto> createEmployee(@RequestBody UserDto userDto) {
         UserDto savedEmployee = userService.createUser(userDto);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);

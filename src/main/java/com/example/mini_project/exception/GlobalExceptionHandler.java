@@ -15,4 +15,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ExceptionMessageDto(nfe.getMessage()));
     }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionMessageDto> handleDuplicationException(DuplicationException de) {
+        return ResponseEntity
+                .status((HttpStatus.CONFLICT))
+                .body(new ExceptionMessageDto(de.getMessage()));
+    }
 }

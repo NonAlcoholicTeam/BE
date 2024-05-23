@@ -2,6 +2,7 @@ package com.example.mini_project.service;
 
 import com.example.mini_project.dto.UserDto;
 import com.example.mini_project.entity.User;
+import com.example.mini_project.exception.DuplicationException;
 import com.example.mini_project.exception.ResourceNotFoundException;
 import com.example.mini_project.mapper.UserMapper;
 import com.example.mini_project.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Transactional
@@ -24,6 +26,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
+
+        // 이메일 중복 처리 예외
+        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+            throw new DuplicationException("해당 이메일은 이미 가입되어 있습니다");
+        }
 
         User user;
 

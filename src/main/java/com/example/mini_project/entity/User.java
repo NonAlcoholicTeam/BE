@@ -1,6 +1,6 @@
-package com.example.postgres.entity;
+package com.example.mini_project.entity;
 
-import com.example.postgres.dto.UserDto;
+import com.example.mini_project.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

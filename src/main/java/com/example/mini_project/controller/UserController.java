@@ -1,7 +1,7 @@
-package com.example.postgres.controller;
+package com.example.mini_project.controller;
 
-import com.example.postgres.dto.UserDto;
-import com.example.postgres.service.UserService;
+import com.example.mini_project.dto.UserDto;
+import com.example.mini_project.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

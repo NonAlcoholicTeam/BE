@@ -1,6 +1,6 @@
-package com.example.postgres.repository;
+package com.example.mini_project.repository;
 
-import com.example.postgres.entity.User;
+import com.example.mini_project.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,13 +1,13 @@
-package com.example.postgres;
+package com.example.mini_project;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PostgresApplication {
+public class MiniApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PostgresApplication.class, args);
+        SpringApplication.run(MiniApplication.class, args);
     }
 
 }

@@ -1,10 +1,10 @@
-package com.example.postgres.service;
+package com.example.mini_project.service;
 
-import com.example.postgres.dto.UserDto;
-import com.example.postgres.entity.User;
-import com.example.postgres.exception.ResourceNotFoundException;
-import com.example.postgres.mapper.UserMapper;
-import com.example.postgres.repository.UserRepository;
+import com.example.mini_project.dto.UserDto;
+import com.example.mini_project.entity.User;
+import com.example.mini_project.exception.ResourceNotFoundException;
+import com.example.mini_project.mapper.UserMapper;
+import com.example.mini_project.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

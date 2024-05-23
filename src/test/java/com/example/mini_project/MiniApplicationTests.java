@@ -1,10 +1,10 @@
-package com.example.postgres;
+package com.example.mini_project;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PostgresApplicationTests {
+class MiniApplicationTests {
 
     @Test
     void contextLoads() {

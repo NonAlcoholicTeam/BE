@@ -25,12 +25,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
 
-        log.info(userDto.getEmail());
-        User user = UserMapper.mapTOEmployee(userDto, passwordEncoder);
-        log.info(userDto.getEmail());
+        User user;
+
+        // TODO: 추후 관리자 인증번호 발급 등의 로직 추가 필요
+        if (userDto.getAdminNumber() != null) {
+            user = UserMapper.mapToAdmin(userDto, passwordEncoder);
+        } else {
+            user = UserMapper.mapToUser(userDto, passwordEncoder);
+        }
+
         User savedUser = userRepository.save(user);
 
-        return UserMapper.mapToEmployeeDto(savedUser);
+        return UserMapper.mapToUserDto(savedUser);
     }
 
     @Transactional(readOnly = true)
@@ -41,14 +47,14 @@ public class UserServiceImpl implements UserService {
                         "조회하려는 " + userId + "번 ID의 회원이 없습니다.")
                 );
 
-        return UserMapper.mapToEmployeeDto(user);
+        return UserMapper.mapToUserDto(user);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(UserMapper::mapToEmployeeDto).toList();
+        return users.stream().map(UserMapper::mapToUserDto).toList();
     }
 
     @Override
@@ -61,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
         User updatedUserObj = userRepository.save(user);
 
-        return UserMapper.mapToEmployeeDto(updatedUserObj);
+        return UserMapper.mapToUserDto(updatedUserObj);
     }
 
     @Override

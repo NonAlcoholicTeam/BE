@@ -20,14 +20,17 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "user_name")
+    @Column(name = "user_name", nullable = false)
     private String username;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "user_role", nullable = false)
+    private UserRoleEnum role;
 
     public void updateUser(UserDto userDto) {
         this.username = userDto.getUsername();

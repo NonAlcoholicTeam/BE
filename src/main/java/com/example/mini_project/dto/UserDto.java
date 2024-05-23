@@ -1,6 +1,7 @@
 package com.example.mini_project.dto;
 
 import com.example.mini_project.entity.User;
+import com.example.mini_project.entity.UserRoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,10 +16,13 @@ public class UserDto {
     private String username;
     private String email;
     private String password;
+    private String adminNumber;
+    private String role;
 
-    public UserDto(Long id, String username, String email) {
+    public UserDto(Long id, String username, String email, UserRoleEnum role) {
         this.id = id;
         this.username = username;
         this.email = email;
+        this.role = role.getRole();
     }
 }

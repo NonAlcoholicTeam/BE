@@ -1,4 +1,4 @@
-package com.example.postgres.dto;
+package com.example.mini_project.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
-    private Long id;
-    private String username;
-    private String email;
-    private String password;
+public class ExceptionMessageDto {
+    private String exceptionMessage;
 }

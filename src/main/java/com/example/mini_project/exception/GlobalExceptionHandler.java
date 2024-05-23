@@ -1,6 +1,6 @@
-package com.example.postgres.exception;
+package com.example.mini_project.exception;
 
-import com.example.postgres.dto.ExceptionMessageDto;
+import com.example.mini_project.dto.ExceptionMessageDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,5 +14,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ExceptionMessageDto(nfe.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionMessageDto> handleDuplicationException(DuplicationException de) {
+        return ResponseEntity
+                .status((HttpStatus.CONFLICT))
+                .body(new ExceptionMessageDto(de.getMessage()));
     }
 }

@@ -1,6 +1,6 @@
-package com.example.postgres.service;
+package com.example.mini_project.service;
 
-import com.example.postgres.dto.UserDto;
+import com.example.mini_project.dto.UserDto;
 
 import java.util.List;
 

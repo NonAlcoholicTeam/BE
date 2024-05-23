@@ -1,4 +1,4 @@
-package com.example.mini_project.auth.configuration;
+package com.example.mini_project.auth.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

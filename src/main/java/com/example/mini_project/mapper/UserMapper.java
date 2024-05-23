@@ -11,7 +11,6 @@ public class UserMapper {
     // entity -> dto
     public static UserDto mapToUserDto(User user) {
         return new UserDto(
-                user.getId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getRole()
@@ -20,22 +19,20 @@ public class UserMapper {
 
     // dto -> entity
     // Role : User
-    public static User mapToUser(UserDto userDto, PasswordEncoder passwordEncoder) {
+    public static User mapToUser(UserDto userDto, String password) {
         return new User(
-                userDto.getId(),
                 userDto.getUsername(),
                 userDto.getEmail(),
-                passwordEncoder.encode(userDto.getPassword()),
+                password,
                 UserRoleEnum.USER);
     }
 
     // Role : Admin
-    public static User mapToAdmin(UserDto userDto, PasswordEncoder passwordEncoder) {
+    public static User mapToAdmin(UserDto userDto, String password) {
         return new User(
-                userDto.getId(),
                 userDto.getUsername(),
                 userDto.getEmail(),
-                passwordEncoder.encode(userDto.getPassword()),
+                password,
                 UserRoleEnum.ADMIN);
     }
 }

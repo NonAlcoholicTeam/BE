@@ -12,15 +12,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    private Long id;
     private String username;
     private String email;
     private String password;
     private String adminNumber;
     private String role;
 
-    public UserDto(Long id, String username, String email, UserRoleEnum role) {
-        this.id = id;
+    public UserDto(String username, String email, UserRoleEnum role) {
         this.username = username;
         this.email = email;
         this.role = role.getRole();

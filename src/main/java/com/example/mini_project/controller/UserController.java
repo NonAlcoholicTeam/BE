@@ -19,8 +19,8 @@ public class UserController {
     // Add Employee(Sign uo)
     @PostMapping("/signup")
     public ResponseEntity<UserDto> createEmployee(@RequestBody UserDto userDto) {
-        UserDto savedEmployee = userService.createUser(userDto);
-        return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
+        UserDto createdUser = userService.createUser(userDto);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     //TODO: 회원정보 RUD

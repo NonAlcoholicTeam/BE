@@ -6,6 +6,7 @@ import com.example.mini_project.exception.ResourceNotFoundException;
 import com.example.mini_project.mapper.UserMapper;
 import com.example.mini_project.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +18,12 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDto createUser(UserDto userDto) {
 
-        User user = UserMapper.mapTOEmployee(userDto);
+        User user = UserMapper.mapTOEmployee(userDto, passwordEncoder);
         User savedUser = userRepository.save(user);
 
         return UserMapper.mapToEmployeeDto(savedUser);

@@ -82,6 +82,19 @@ public class JwtUtil {
                         .compact();
     }
 
+    // 페이로드 기반 토큰 생성기
+    public String createToken(TokenPayload payload) {
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setSubject(payload.getSub()) // 사용자 식별자값(ID)
+                        .claim(AUTHORIZATION_KEY, payload.getRole()) // 사용자 권한
+                        .setExpiration(payload.getExpiresAt()) // 만료 시간
+                        .setIssuedAt(payload.getIat()) // 발급일
+                        .setId(payload.getJti()) // JWT ID
+                        .signWith(key, signatureAlgorithm) // 암호화 Key & 알고리즘
+                        .compact();
+    }
+
     // cookie에 리프레시 토큰 저장
     public void addJwtToCookie(String token, HttpServletResponse res) {
         try {
@@ -130,7 +143,7 @@ public class JwtUtil {
     }
 
     // HttpServletRequest 객체에서 cookie의 값인 jwt 가져오기
-    public String getTokenFromRequest(HttpServletRequest req) {
+    public String getTokenFromRequestCookie(HttpServletRequest req) {
         Cookie[] cookies = req.getCookies();
 
         if(cookies != null) {
@@ -138,7 +151,22 @@ public class JwtUtil {
                 if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
                     return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8); // Encode 되어 넘어간 Value 다시 Decode
                 }
+//                if (cookie.getName().equals(ACCESS_TOKEN_HEADER)) {
+//                    return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8); // Encode 되어 넘어간 Value 다시 Decode
+//                }
+//                if (cookie.getName().equals(REFRESH_TOKEN_HEADER)) {
+//                    return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8); // Encode 되어 넘어간 Value 다시 Decode
+//                }
             }
+        }
+        return null;
+    }
+
+    //TODO: 만약 헤더에서 곧장 바로 가져온다면 이 메소드를 변형해야 할듯
+    public String getJwtFromRequestHeader(HttpServletRequest request, TokenType tokenType) {
+        String bearerToken = request.getHeader(TokenType.ACCESS.equals(tokenType) ? ACCESS_TOKEN_HEADER : REFRESH_TOKEN_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
         }
         return null;
     }

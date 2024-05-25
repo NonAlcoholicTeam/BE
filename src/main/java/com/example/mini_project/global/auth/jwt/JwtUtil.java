@@ -1,6 +1,7 @@
 package com.example.mini_project.global.auth.jwt;
 
 import com.example.mini_project.domain.entity.UserRoleEnum;
+import com.example.mini_project.global.auth.entity.TokenType;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -21,18 +22,24 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtUtil {
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String ACCESS_TOKEN_HEADER = "AccessToken";
+    public static final String REFRESH_TOKEN_HEADER = "RefreshToken";
     // 사용자 권한 값의 KEY
     public static final String AUTHORIZATION_KEY = "auth";
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
 
     // 토큰 만료시간
-    private final long TOKEN_EXPIRE_TIME = 60 * 60 * 1000L; // 60분
+//    private final long TOKEN_EXPIRE_TIME = 60 * 60 * 1000L; // 60분
+    private final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L; // 60분
+    // Refresh 토큰 만료시간
+    private final long REFRESH_TOKEN_TIME = 60 * 60 * 24 * 7 * 1000L; // 7일
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -46,6 +53,19 @@ public class JwtUtil {
     public void init() {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
+    }
+
+    // 토큰 생성을 위한 페이로드 생성 메소드
+    public TokenPayload createTokenPayload(String email, UserRoleEnum role, TokenType tokenType)  {
+        Date date = new Date();
+        long tokenTime = TokenType.ACCESS.equals(tokenType) ? ACCESS_TOKEN_TIME : REFRESH_TOKEN_TIME;
+        return new TokenPayload(
+                email,
+                UUID.randomUUID().toString(),
+                date,
+                new Date(date.getTime() + tokenTime),
+                role
+        );
     }
 
     // 토큰 생성
@@ -62,7 +82,7 @@ public class JwtUtil {
                         .compact();
     }
 
-    // cookie에 jwt 저장
+    // cookie에 리프레시 토큰 저장
     public void addJwtToCookie(String token, HttpServletResponse res) {
         try {
             token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20"); // Cookie Value 에는 공백이 불가능해서 encoding 진행

@@ -2,7 +2,12 @@ package com.example.mini_project.domain.controller;
 
 import com.example.mini_project.domain.dto.UserDto;
 import com.example.mini_project.domain.service.UserService;
+import com.example.mini_project.global.dto.ExceptionMessageDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,8 +22,18 @@ public class UserController {
 
     private final UserService userService;
 
-    // Add Employee(Sign uo)
+    // Add Employee(Sign up)
     @Operation(summary = "회원가입", description = "사용자 회원가입을 위한 API")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "회원가입 성공",
+                    content = @Content(schema = @Schema(implementation = UserDto.class))),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "중복 이메일 가입 시도",
+                    content = @Content(schema = @Schema(implementation = ExceptionMessageDto.class)))
+    })
     @PostMapping("/signup")
     public ResponseEntity<UserDto> createEmployee(@RequestBody UserDto userDto) {
         UserDto createdUser = userService.createUser(userDto);

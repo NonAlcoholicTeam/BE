@@ -2,11 +2,14 @@ package com.example.mini_project.domain.controller;
 
 import com.example.mini_project.domain.dto.UserDto;
 import com.example.mini_project.domain.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "User 컨트롤러", description = "회원 기능을 전반적으로 담당하는 컨트롤러")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/mini/user")
@@ -15,6 +18,7 @@ public class UserController {
     private final UserService userService;
 
     // Add Employee(Sign uo)
+    @Operation(summary = "회원가입", description = "사용자 회원가입을 위한 API")
     @PostMapping("/signup")
     public ResponseEntity<UserDto> createEmployee(@RequestBody UserDto userDto) {
         UserDto createdUser = userService.createUser(userDto);

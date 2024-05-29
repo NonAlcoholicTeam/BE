@@ -4,12 +4,14 @@ import com.example.mini_project.domain.dto.UserLoginRequestDto;
 import com.example.mini_project.domain.dto.UserLoginResponseDto;
 import com.example.mini_project.domain.entity.UserDetailsImpl;
 import com.example.mini_project.domain.entity.UserRoleEnum;
+import com.example.mini_project.domain.service.TokenService;
 import com.example.mini_project.global.auth.entity.TokenType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,8 +27,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final JwtUtil jwtUtil; // 로그인 성공 시, 존맛탱 발급을 위한 의존성 주입
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    private final TokenService tokenService;
+
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, TokenService tokenService) {
         this.jwtUtil = jwtUtil;
+        this.tokenService = tokenService;
         setFilterProcessesUrl("/mini/user/login"); // 로그인 처리 경로 설정(매우매우 중요)
         super.setUsernameParameter("email");
     }
@@ -68,6 +73,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, accessToken);
         jwtUtil.addJwtToCookie(refreshToken, response);
+
+        tokenService.createToken(username, accessToken, refreshToken);
 
 //        response.setStatus(HttpStatus.OK.value());
 //        response.setCharacterEncoding("UTF-8"); // 클라이언트 전달 메시지 인코딩

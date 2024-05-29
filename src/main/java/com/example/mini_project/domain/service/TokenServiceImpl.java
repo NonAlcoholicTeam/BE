@@ -21,6 +21,12 @@ public class TokenServiceImpl implements TokenService{
     private final TokenRepository tokenRepository;
     private final UserRepository userRepository;
 
+    /**
+     * 로그인에 따른 email, 엑세스 토큰, 리프레쉬 토큰 기반 토큰엔티티 생성
+     * @param username
+     * @param accessToken
+     * @param refreshToken
+     */
     @Override
     public void createToken(String username, String accessToken, String refreshToken) {
         Optional<User> userOptional = userRepository.findByEmail(username);
@@ -31,5 +37,12 @@ public class TokenServiceImpl implements TokenService{
 
         Token token = new Token(userOptional.get(), accessToken, refreshToken);
         tokenRepository.save(token);
+    }
+
+    @Override
+    public String deleteToken(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        return null;
     }
 }

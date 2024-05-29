@@ -1,5 +1,6 @@
 package com.example.mini_project.global.auth.config;
 
+import com.example.mini_project.domain.service.TokenService;
 import com.example.mini_project.global.auth.exception.JwtAccessDenyHandler;
 import com.example.mini_project.global.auth.exception.JwtAuthenticationEntryPoint;
 import com.example.mini_project.global.auth.jwt.JwtAuthenticationFilter;
@@ -35,6 +36,8 @@ public class WebSecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 인증 예외 커스텀 메시지 던지기
     private final JwtAccessDenyHandler jwtAccessDenyHandler; // 인가 예외 커스텀 메시지 던지기(역할별 접근권한같은)
 
+    private final TokenService tokenService;
+
     // 인증 매니저 생성
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -43,7 +46,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception { // 인증필터 생성
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, tokenService);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration)); // 인증매니저 설정
         return filter;
     }

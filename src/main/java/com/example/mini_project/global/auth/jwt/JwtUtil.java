@@ -72,7 +72,8 @@ public class JwtUtil {
                 UUID.randomUUID().toString(),
                 date,
                 new Date(date.getTime() + tokenTime),
-                role
+                role,
+                tokenType
         );
     }
 

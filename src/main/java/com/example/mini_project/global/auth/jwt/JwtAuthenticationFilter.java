@@ -4,6 +4,7 @@ import com.example.mini_project.domain.dto.UserLoginRequestDto;
 import com.example.mini_project.domain.dto.UserLoginResponseDto;
 import com.example.mini_project.domain.entity.UserDetailsImpl;
 import com.example.mini_project.domain.entity.UserRoleEnum;
+import com.example.mini_project.global.auth.entity.TokenType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -57,8 +58,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
-        String token = jwtUtil.createToken(username, role);
-        jwtUtil.addJwtToCookie(token, response);
+        // 기존 버전
+//        String token = jwtUtil.createToken(username, role);
+//        jwtUtil.addJwtToCookie(token, response);
+
+        // 신 버전
+        String accessToken = jwtUtil.createToken(jwtUtil.createTokenPayload(username, role, TokenType.ACCESS));
+        String refreshToken = jwtUtil.createToken(jwtUtil.createTokenPayload(username, role, TokenType.REFRESH));
+
+        response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, accessToken);
+        jwtUtil.addJwtToCookie(refreshToken, response);
 
 //        response.setStatus(HttpStatus.OK.value());
 //        response.setCharacterEncoding("UTF-8"); // 클라이언트 전달 메시지 인코딩

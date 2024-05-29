@@ -56,6 +56,14 @@ public class JwtUtil {
     }
 
     // 토큰 생성을 위한 페이로드 생성 메소드
+
+    /**
+     * (1) 얘를
+     * @param email
+     * @param role
+     * @param tokenType
+     * @return
+     */
     public TokenPayload createTokenPayload(String email, UserRoleEnum role, TokenType tokenType)  {
         Date date = new Date();
         long tokenTime = TokenType.ACCESS.equals(tokenType) ? ACCESS_TOKEN_TIME : REFRESH_TOKEN_TIME;
@@ -82,6 +90,11 @@ public class JwtUtil {
                         .compact();
     }
 
+    /**
+     * (2) 여기에 넣어서 토큰 생성
+     * @param payload
+     * @return
+     */
     // 페이로드 기반 토큰 생성기
     public String createToken(TokenPayload payload) {
         return BEARER_PREFIX +
@@ -100,7 +113,7 @@ public class JwtUtil {
         try {
             token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
 
-            Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // Name-Value
+            Cookie cookie = new Cookie(REFRESH_TOKEN_HEADER, token); // Name-Value
             cookie.setPath("/");
 
             // Response 객체에 Cookie 추가
@@ -110,6 +123,11 @@ public class JwtUtil {
         }
     }
 
+    /**
+     * 토큰 앞글자 잘라내기
+     * @param tokenValue
+     * @return
+     */
     // jwt 토큰 substring
     public String substringToken(String tokenValue) {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {

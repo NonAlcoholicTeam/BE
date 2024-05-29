@@ -1,6 +1,6 @@
 package com.example.mini_project.domain.controller;
 
-import com.example.mini_project.domain.dto.UserDto;
+
 import com.example.mini_project.domain.entity.UserDetailsImpl;
 import com.example.mini_project.domain.service.TokenService;
 import com.example.mini_project.global.dto.ApiMessageDto;
@@ -42,7 +42,7 @@ public class TokenController {
     public ResponseEntity<ApiMessageDto> logout(
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String message = tokenService.deleteToken(userDetails.getUsername());
-        ApiMessageDto messageDto = new ApiMessageDto(message);
+        ApiMessageDto messageDto = new ApiMessageDto(HttpStatus.OK.value(), message);
 
         return new ResponseEntity<>(messageDto, HttpStatus.OK);
     }

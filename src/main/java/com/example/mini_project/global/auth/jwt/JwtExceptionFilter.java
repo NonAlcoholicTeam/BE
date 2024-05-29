@@ -33,7 +33,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         res.setStatus(status.value());
         res.setContentType("application/json; charset=UTF-8");
 
-        ApiMessageDto apiMessageDto = new ApiMessageDto(ex.getMessage());
+        ApiMessageDto apiMessageDto = new ApiMessageDto(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
         String json = objectMapper.writeValueAsString(apiMessageDto);
         res.getWriter().write(json);
     }

@@ -1,7 +1,6 @@
 package com.example.mini_project.global.exception;
 
 import com.example.mini_project.global.dto.ApiMessageDto;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,13 +13,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiMessageDto> handleResourceNotFoundException(ResourceNotFoundException nfe) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(new ApiMessageDto(nfe.getMessage()));
+                .body(new ApiMessageDto(HttpStatus.NOT_FOUND.value(), nfe.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ApiMessageDto> handleDuplicationException(DuplicationException de) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(new ApiMessageDto(de.getMessage()));
+                .body(new ApiMessageDto(HttpStatus.CONFLICT.value(), de.getMessage()));
     }
 }

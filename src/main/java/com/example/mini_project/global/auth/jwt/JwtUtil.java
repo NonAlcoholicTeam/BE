@@ -38,7 +38,7 @@ public class JwtUtil {
 
     // 토큰 만료시간
 //    private final long TOKEN_EXPIRE_TIME = 60 * 60 * 1000L; // 60분
-    private final long ACCESS_TOKEN_TIME = 1000L; // 임시로 1초
+    private final long ACCESS_TOKEN_TIME = 60 * 1000L; // 임시로 1분
 //            60 * 60 * 1000L; // 60분
     // Refresh 토큰 만료시간
     private final long REFRESH_TOKEN_TIME = 60 * 60 * 24 * 7 * 1000L; // 7일

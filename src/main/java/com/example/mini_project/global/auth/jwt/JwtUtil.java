@@ -26,8 +26,9 @@ import java.util.UUID;
 
 @Component
 public class JwtUtil {
-    // Header KEY 값
+    // Request에서 받을 KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    // Response에 담을 KEY 값
     public static final String ACCESS_TOKEN_HEADER = "AccessToken";
     public static final String REFRESH_TOKEN_HEADER = "RefreshToken";
     // 사용자 권한 값의 KEY

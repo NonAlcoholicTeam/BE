@@ -14,14 +14,12 @@ public class TokenPayload {
     private String role;
     private Date iat;
     private Date expiresAt;
-    private TokenType tokenType;
 
-    public TokenPayload(String sub, String jti, Date iat, Date expiresAt, UserRoleEnum role, TokenType tokenType) {
+    public TokenPayload(String sub, String jti, Date iat, Date expiresAt, UserRoleEnum role) {
         this.sub = sub;
         this.jti = jti;
         this.role = role.getRole();
         this.iat = iat;
         this.expiresAt = expiresAt;
-        this.tokenType = tokenType;
     }
 }

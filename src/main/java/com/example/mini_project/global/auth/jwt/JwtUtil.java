@@ -72,24 +72,23 @@ public class JwtUtil {
                 UUID.randomUUID().toString(),
                 date,
                 new Date(date.getTime() + tokenTime),
-                role,
-                tokenType
+                role
         );
     }
 
-    // 토큰 생성
-    public String createToken(String username, UserRoleEnum role) {
-        Date date = new Date();
-
-        return BEARER_PREFIX +
-                Jwts.builder()
-                        .setSubject(username) // 사용자 식별값
-                        .claim(AUTHORIZATION_KEY, role) // 사용자 권한
-//                        .setExpiration(new Date(date.getTime() + TOKEN_EXPIRE_TIME)) // 만료 시간
-                        .setIssuedAt(date) // 발급일
-                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
-                        .compact();
-    }
+//    // 토큰 생성
+//    public String createToken(String username, UserRoleEnum role) {
+//        Date date = new Date();
+//
+//        return BEARER_PREFIX +
+//                Jwts.builder()
+//                        .setSubject(username) // 사용자 식별값
+//                        .claim(AUTHORIZATION_KEY, role) // 사용자 권한
+////                        .setExpiration(new Date(date.getTime() + TOKEN_EXPIRE_TIME)) // 만료 시간
+//                        .setIssuedAt(date) // 발급일
+//                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
+//                        .compact();
+//    }
 
     /**
      * (2) 여기에 넣어서 토큰 생성

@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExceptionMessageDto {
+public class ApiMessageDto {
     private String exceptionMessage;
 }

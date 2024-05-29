@@ -43,6 +43,12 @@ public class TokenServiceImpl implements TokenService{
     public String deleteToken(String email) {
         Optional<User> userOptional = userRepository.findByEmail(email);
 
-        return null;
+        if (userOptional.isEmpty()) {
+            throw new ResourceNotFoundException("유효하지 않은 이메일 처리입니다. 가입된 이메일인지 확인해주세요.");
+        }
+
+        tokenRepository.deleteByUser(userOptional.get());
+
+        return "성공적으로 로그아웃됐습니다.";
     }
 }

@@ -2,7 +2,7 @@ package com.example.mini_project.domain.controller;
 
 import com.example.mini_project.domain.dto.UserDto;
 import com.example.mini_project.domain.service.UserService;
-import com.example.mini_project.global.dto.ExceptionMessageDto;
+import com.example.mini_project.global.dto.ApiMessageDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,7 +32,7 @@ public class UserController {
             @ApiResponse(
                     responseCode = "409",
                     description = "중복 이메일 가입 시도",
-                    content = @Content(schema = @Schema(implementation = ExceptionMessageDto.class)))
+                    content = @Content(schema = @Schema(implementation = ApiMessageDto.class)))
     })
     @PostMapping("/signup")
     public ResponseEntity<UserDto> createEmployee(@RequestBody UserDto userDto) {

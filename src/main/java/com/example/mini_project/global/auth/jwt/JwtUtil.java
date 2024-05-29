@@ -38,7 +38,8 @@ public class JwtUtil {
 
     // 토큰 만료시간
 //    private final long TOKEN_EXPIRE_TIME = 60 * 60 * 1000L; // 60분
-    private final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L; // 60분
+    private final long ACCESS_TOKEN_TIME = 1000L; // 임시로 1초
+//            60 * 60 * 1000L; // 60분
     // Refresh 토큰 만료시간
     private final long REFRESH_TOKEN_TIME = 60 * 60 * 24 * 7 * 1000L; // 7일
 
@@ -146,13 +147,20 @@ public class JwtUtil {
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             logger.error("Invalid JWT signature, 유효하지 않는 JWT 서명입니다.");
+            throw new JwtException("Invalid JWT signature, 유효하지 않는 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
             logger.error("Expired JWT token, 만료된 JWT 토큰입니다.");
+            throw new JwtException("Expired JWT token, 만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
             logger.error("Unsupported JWT token, 지원되지 않는 JWT 토큰입니다.");
+            throw new JwtException("Unsupported JWT token, 지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims is empty, 잘못된 JWT 토큰입니다.");
+            throw new JwtException("Unsupported JWT token, 지원되지 않는 JWT 토큰입니다.");
+        } catch (Exception e) {
+            logger.error("기타 에러 확인 요망");
         }
+
         return false;
     }
 

@@ -5,6 +5,7 @@ import com.example.mini_project.global.auth.exception.JwtAccessDenyHandler;
 import com.example.mini_project.global.auth.exception.JwtAuthenticationEntryPoint;
 import com.example.mini_project.global.auth.jwt.JwtAuthenticationFilter;
 import com.example.mini_project.global.auth.jwt.JwtAuthorizationFilter;
+import com.example.mini_project.global.auth.jwt.JwtExceptionFilter;
 import com.example.mini_project.global.auth.jwt.JwtUtil;
 import com.example.mini_project.domain.entity.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class WebSecurityConfig {
     // 필터단 예외
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 인증 예외 커스텀 메시지 던지기
     private final JwtAccessDenyHandler jwtAccessDenyHandler; // 인가 예외 커스텀 메시지 던지기(역할별 접근권한같은)
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     private final TokenService tokenService;
 
@@ -110,6 +112,8 @@ public class WebSecurityConfig {
 
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class); // 인가 처리 필터
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // 인증(+ 로그인) 처리 필터
+        http.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class); // JwtAuthenticationFilter 앞단에 JwtExceptionFilter를 위치시키겠다는 설정
+
 
         return http.build();
     }

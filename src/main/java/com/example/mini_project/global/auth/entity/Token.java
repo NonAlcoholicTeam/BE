@@ -31,4 +31,10 @@ public class Token {
 
     @Column(name = "refresh_token", nullable = false)
     private String refreshToken;
+
+    public Token(User user, String accessToken, String refreshToken) {
+        this.user = user;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
 }

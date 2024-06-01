@@ -1,6 +1,7 @@
 package com.example.mini_project.global.auth.jwt;
 
 import com.example.mini_project.domain.entity.UserRoleEnum;
+import com.example.mini_project.global.auth.entity.TokenPayload;
 import com.example.mini_project.global.auth.entity.TokenType;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -29,6 +30,7 @@ public class JwtUtil {
     // Request에서 받을 KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
     // Response에 담을 KEY 값
+    public static final String TOKEN_TYPE = "TokenType";
     public static final String ACCESS_TOKEN_HEADER = "AccessToken";
     public static final String REFRESH_TOKEN_HEADER = "RefreshToken";
     // 사용자 권한 값의 KEY
@@ -74,7 +76,8 @@ public class JwtUtil {
                 UUID.randomUUID().toString(),
                 date,
                 new Date(date.getTime() + tokenTime),
-                role
+                role,
+                tokenType
         );
     }
 
@@ -109,6 +112,34 @@ public class JwtUtil {
                         .signWith(key, signatureAlgorithm) // 암호화 Key & 알고리즘
                         .compact();
     }
+
+    public String createAccessToken(TokenPayload payload) {
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setSubject(payload.getSub()) // 사용자 식별자값(ID)
+                        .claim(AUTHORIZATION_KEY, payload.getRole()) // 사용자 권한
+                        .setExpiration(payload.getExpiresAt()) // 만료 시간
+                        .setIssuedAt(payload.getIat()) // 발급일
+                        .setId(payload.getJti()) // JWT ID
+                        .claim(TOKEN_TYPE, payload.getTokenType())
+                        .signWith(key, signatureAlgorithm) // 암호화 Key & 알고리즘
+                        .compact();
+    }
+
+    public String createRefreshToken(TokenPayload payload) {
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setSubject(payload.getSub()) // 사용자 식별자값(ID)
+                        .claim(AUTHORIZATION_KEY, payload.getRole()) // 사용자 권한
+                        .setExpiration(payload.getExpiresAt()) // 만료 시간
+                        .setIssuedAt(payload.getIat()) // 발급일
+                        .setId(payload.getJti()) // JWT ID
+                        .claim(TOKEN_TYPE, payload.getTokenType())
+                        .signWith(key, signatureAlgorithm) // 암호화 Key & 알고리즘
+                        .compact();
+    }
+
+
 
     // cookie에 리프레시 토큰 저장
     public void addJwtToCookie(String token, HttpServletResponse res) {

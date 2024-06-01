@@ -1,6 +1,5 @@
 package com.example.mini_project.global.auth.config;
 
-import com.example.mini_project.domain.service.TokenService;
 import com.example.mini_project.global.auth.exception.JwtAccessDenyHandler;
 import com.example.mini_project.global.auth.exception.JwtAuthenticationEntryPoint;
 import com.example.mini_project.global.auth.jwt.JwtAuthenticationFilter;
@@ -22,7 +21,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity // Spring Security 지원을 가능하게 함
@@ -38,8 +36,6 @@ public class WebSecurityConfig {
     private final JwtAccessDenyHandler jwtAccessDenyHandler; // 인가 예외 커스텀 메시지 던지기(역할별 접근권한같은)
     private final JwtExceptionFilter jwtExceptionFilter;
 
-    private final TokenService tokenService;
-
     // 인증 매니저 생성
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -48,7 +44,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception { // 인증필터 생성
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, tokenService);
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration)); // 인증매니저 설정
         return filter;
     }

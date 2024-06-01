@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tokens")
+@Table(name = "refresh_tokens")
 public class RefreshToken {
 
     @Id
@@ -26,7 +26,7 @@ public class RefreshToken {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @Column(name = "refresh_token", nullable = false)
+    @Column(name = "refresh_token", nullable = false, length = 1024)
     private String refreshToken;
 
     public RefreshToken(User user, String refreshToken) {

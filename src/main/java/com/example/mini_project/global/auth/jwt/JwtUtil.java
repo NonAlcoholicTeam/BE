@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -45,18 +47,21 @@ public class JwtUtil {
     // Refresh 토큰 만료시간
     private final long REFRESH_TOKEN_TIME = 60 * 60 * 24 * 7 * 1000L; // 7일
 
-    @Value("${jwt.secret.key}")
-    private String secretKey;
+    private final SecretKey secretKey;
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     // 로그 세팅
     public static final Logger logger = LoggerFactory.getLogger("jwt 발급 및 처리 로직");
 
-    @PostConstruct
-    public void init() {
-        byte[] bytes = Base64.getDecoder().decode(secretKey);
-        key = Keys.hmacShaKeyFor(bytes);
+//    @PostConstruct
+//    public void init() {
+//        byte[] bytes = Base64.getDecoder().decode(secretKey);
+//        key = Keys.hmacShaKeyFor(bytes);
+//    }
+
+    public JwtUtil(@Value("${jwt.secret.key}") String secret) {
+        this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
     // 토큰 생성을 위한 페이로드 생성 메소드
@@ -101,44 +106,53 @@ public class JwtUtil {
      * @return
      */
     // 페이로드 기반 토큰 생성기
-    public String createToken(TokenPayload payload) {
-        return BEARER_PREFIX +
-                Jwts.builder()
-                        .setSubject(payload.getSub()) // 사용자 식별자값(ID)
-                        .claim(AUTHORIZATION_KEY, payload.getRole()) // 사용자 권한
-                        .setExpiration(payload.getExpiresAt()) // 만료 시간
-                        .setIssuedAt(payload.getIat()) // 발급일
-                        .setId(payload.getJti()) // JWT ID
-                        .signWith(key, signatureAlgorithm) // 암호화 Key & 알고리즘
-                        .compact();
-    }
+//    public String createToken(TokenPayload payload) {
+//        return BEARER_PREFIX +
+//                Jwts.builder()
+//                        .setSubject(payload.getSub()) // 사용자 식별자값(ID)
+//                        .claim(AUTHORIZATION_KEY, payload.getRole()) // 사용자 권한
+//                        .setExpiration(payload.getExpiresAt()) // 만료 시간
+//                        .setIssuedAt(payload.getIat()) // 발급일
+//                        .setId(payload.getJti()) // JWT ID
+//                        .signWith(key, signatureAlgorithm) // 암호화 Key & 알고리즘
+//                        .compact();
+//    }
 
+    // 11.5 -> 12.3
     public String createAccessToken(TokenPayload payload) {
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(payload.getSub()) // 사용자 식별자값(ID)
+                        .subject(payload.getSub()) // 사용자 식별자값(ID)
                         .claim(AUTHORIZATION_KEY, payload.getRole()) // 사용자 권한
-                        .setExpiration(payload.getExpiresAt()) // 만료 시간
-                        .setIssuedAt(payload.getIat()) // 발급일
-                        .setId(payload.getJti()) // JWT ID
+                        .expiration(payload.getExpiresAt()) // 만료 시간
+                        .issuedAt(payload.getIat()) // 발급일
+                        .id(payload.getJti()) // JWT ID
                         .claim(TOKEN_TYPE, payload.getTokenType())
-                        .signWith(key, signatureAlgorithm) // 암호화 Key & 알고리즘
+                        .signWith(secretKey) // 암호화 Key & 알고리즘
                         .compact();
     }
 
     public String createRefreshToken(TokenPayload payload) {
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(payload.getSub()) // 사용자 식별자값(ID)
+                        .subject(payload.getSub()) // 사용자 식별자값(ID)
                         .claim(AUTHORIZATION_KEY, payload.getRole()) // 사용자 권한
-                        .setExpiration(payload.getExpiresAt()) // 만료 시간
-                        .setIssuedAt(payload.getIat()) // 발급일
-                        .setId(payload.getJti()) // JWT ID
+                        .expiration(payload.getExpiresAt()) // 만료 시간
+                        .issuedAt(payload.getIat()) // 발급일
+                        .id(payload.getJti()) // JWT ID
                         .claim(TOKEN_TYPE, payload.getTokenType())
-                        .signWith(key, signatureAlgorithm) // 암호화 Key & 알고리즘
+                        .signWith(secretKey) // 암호화 Key & 알고리즘
                         .compact();
     }
 
+    public String getTokenType(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get(TOKEN_TYPE, String.class);
+    }
 
 
     // cookie에 리프레시 토큰 저장
@@ -174,7 +188,10 @@ public class JwtUtil {
     // 토큰 검증
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parser().
+                    verifyWith(secretKey).
+                    build().
+                    parseSignedClaims(token);
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             logger.error("Invalid JWT signature, 유효하지 않는 JWT 서명입니다.");
@@ -197,7 +214,11 @@ public class JwtUtil {
 
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     // HttpServletRequest 객체에서 cookie의 값인 jwt 가져오기

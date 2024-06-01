@@ -44,7 +44,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             token = jwtUtil.substringToken(token);
             log.info(token);
 
-            // 날짜 만료로 인한 리프레쉬토큰 요청
+            // 날짜 만료로 인한 리프레쉬토큰 요청이 포함되는 부분
             if (!jwtUtil.validateToken(token)) {
                 log.error("Token Error");
                 return;

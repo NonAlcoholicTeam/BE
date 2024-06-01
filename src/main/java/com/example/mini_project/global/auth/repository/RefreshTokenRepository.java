@@ -1,4 +1,4 @@
-package com.example.mini_project.domain.repository;
+package com.example.mini_project.global.auth.repository;
 
 import com.example.mini_project.domain.entity.User;
 import com.example.mini_project.global.auth.entity.RefreshToken;

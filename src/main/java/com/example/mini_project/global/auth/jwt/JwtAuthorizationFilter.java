@@ -31,12 +31,20 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
+        /**
+         1. 토큰의 타입부터 확인한다
+         2-1. 엑세스토큰이 확인됐다
+         2-2. 유효성 판별 후 필터단 넘긴다
+         */
+
+        // 현재는 쿠키로부터 갖고오지만, 만약 헤더로부터 갖고온다면 맞춰 수정해야겠지
         String token = jwtUtil.getTokenFromRequestCookie(request);
 
         if (StringUtils.hasText(token)) {
             token = jwtUtil.substringToken(token);
             log.info(token);
 
+            // 날짜 만료로 인한 리프레쉬토큰 요청
             if (!jwtUtil.validateToken(token)) {
                 log.error("Token Error");
                 return;
@@ -45,6 +53,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             Claims info = jwtUtil.getUserInfoFromToken(token);
 
             try {
+                // username 담아주기
                 setAuthentication(info.getSubject());
             } catch (Exception e) {
                 log.error(e.getMessage());
@@ -52,6 +61,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
         }
 
+        // 다음 필터로 넘어가라는 의미
+        // 이걸 이용해서 리프레쉬 토큰에 대한 로직 짜면 될 것 같은데
         filterChain.doFilter(request, response);
     }
 

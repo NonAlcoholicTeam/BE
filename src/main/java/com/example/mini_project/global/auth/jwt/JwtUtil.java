@@ -189,6 +189,35 @@ public class JwtUtil {
         return null;
     }
 
+    // 쿠키에서 엑세스 토큰 갖고오기
+    public String getAccessTokenFromRequestCookie(HttpServletRequest req) {
+        Cookie[] cookies = req.getCookies();
+
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(ACCESS_TOKEN_HEADER)) {
+                    return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8); // Encode 되어 넘어간 Value 다시 Decode
+                }
+            }
+        }
+        return null;
+    }
+
+    // 쿠키에서 리프레쉬 토큰 갖고오기
+    public String getRefreshTokenFromRequestCookie(HttpServletRequest req) {
+        Cookie[] cookies = req.getCookies();
+
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(REFRESH_TOKEN_HEADER)) {
+                    return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8); // Encode 되어 넘어간 Value 다시 Decode
+                }
+            }
+        }
+        return null;
+    }
+
+
     //TODO: 만약 헤더에서 곧장 바로 가져온다면 이 메소드를 변형해야 할듯
     public String getJwtFromRequestHeader(HttpServletRequest request, TokenType tokenType) {
         String bearerToken = request.getHeader(TokenType.ACCESS.equals(tokenType) ? ACCESS_TOKEN_HEADER : REFRESH_TOKEN_HEADER);

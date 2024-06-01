@@ -1,5 +1,6 @@
 package com.example.mini_project.global.auth.config;
 
+import com.example.mini_project.domain.repository.UserRepository;
 import com.example.mini_project.global.auth.exception.JwtAccessDenyHandler;
 import com.example.mini_project.global.auth.exception.JwtAuthenticationEntryPoint;
 import com.example.mini_project.global.auth.jwt.JwtAuthenticationFilter;
@@ -7,6 +8,7 @@ import com.example.mini_project.global.auth.jwt.JwtAuthorizationFilter;
 import com.example.mini_project.global.auth.jwt.JwtExceptionFilter;
 import com.example.mini_project.global.auth.jwt.JwtUtil;
 import com.example.mini_project.domain.entity.UserDetailsServiceImpl;
+import com.example.mini_project.global.auth.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +33,8 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     // 필터단 예외
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 인증 예외 커스텀 메시지 던지기
     private final JwtAccessDenyHandler jwtAccessDenyHandler; // 인가 예외 커스텀 메시지 던지기(역할별 접근권한같은)
@@ -44,7 +48,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception { // 인증필터 생성
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, userRepository, refreshTokenRepository);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration)); // 인증매니저 설정
         return filter;
     }

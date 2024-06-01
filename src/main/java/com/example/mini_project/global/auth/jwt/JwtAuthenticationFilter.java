@@ -83,7 +83,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throw new ResourceNotFoundException("데이터베이스의 이메일 정보와 서버의 이메일 정보가 다름.");
         }
 
-        String refreshTokenValue = jwtUtil.substringToken(refreshToken);
+        String refreshTokenValue = refreshToken.substring(7);
 
         User user = userOptional.get();
         RefreshToken refreshTokenObj = new RefreshToken(user, refreshTokenValue);

@@ -40,6 +40,11 @@ public class UserController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return new ResponseEntity<>("test success", HttpStatus.OK);
+    }
+
     //TODO: 회원정보 RUD
 //    // Get Employee
 //    @GetMapping("/{userId}")

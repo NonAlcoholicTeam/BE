@@ -32,7 +32,7 @@ public class JwtUtil {
     // Request에서 받을 KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
     // Response에 담을 KEY 값
-    public static final String TOKEN_TYPE = "TokenType";
+    public static final String TOKEN_TYPE = "type";
     public static final String ACCESS_TOKEN_HEADER = "AccessToken";
     public static final String REFRESH_TOKEN_HEADER = "RefreshToken";
     // 사용자 권한 값의 KEY
@@ -42,7 +42,7 @@ public class JwtUtil {
 
     // 토큰 만료시간
 //    private final long TOKEN_EXPIRE_TIME = 60 * 60 * 1000L; // 60분
-    private final long ACCESS_TOKEN_TIME = 60 * 1000L; // 임시로 1분
+    private final long ACCESS_TOKEN_TIME = 3 * 60 * 1000L; // 임시로 3분
 //            60 * 60 * 1000L; // 60분
     // Refresh 토큰 만료시간
     private final long REFRESH_TOKEN_TIME = 60 * 60 * 24 * 7 * 1000L; // 7일

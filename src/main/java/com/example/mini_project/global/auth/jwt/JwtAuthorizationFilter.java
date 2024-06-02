@@ -89,10 +89,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             String newAccessToken = jwtUtil.createAccessToken(
-                    jwtUtil.createTokenPayload(user.getEmail(), user.getRole(), TokenType.ACCESS));
+                    jwtUtil.createTokenPayload(user.getEmail(), user.getRole(), TokenType.ACCESS)).substring(7);
             log.info("새로운 엑세스토큰: " + newAccessToken);
             // 새로운 엑세스토큰 업데이트
             tokenObj.update(newAccessToken);
+            tokenRepository.save(tokenObj);
 
             try {
                 // username 담아주기

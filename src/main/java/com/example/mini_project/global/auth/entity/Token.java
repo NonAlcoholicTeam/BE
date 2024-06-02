@@ -12,8 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "refresh_tokens")
-public class RefreshToken {
+@Table(name = "tokens")
+public class Token {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,11 +26,19 @@ public class RefreshToken {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @Column(name = "refresh_token", nullable = false, length = 1024)
+    @Column(name = "access_token", nullable = false, length = 2048)
+    private String accessToken;
+
+    @Column(name = "refresh_token", nullable = false, length = 2048)
     private String refreshToken;
 
-    public RefreshToken(User user, String refreshToken) {
+    public Token(User user, String accessToken, String refreshToken) {
         this.user = user;
+        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+    }
+
+    public void update(String newAccessToken) {
+        this.accessToken = newAccessToken;
     }
 }

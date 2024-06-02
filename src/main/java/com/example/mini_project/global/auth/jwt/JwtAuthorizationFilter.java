@@ -4,7 +4,7 @@ import com.example.mini_project.domain.entity.User;
 import com.example.mini_project.domain.entity.UserDetailsServiceImpl;
 import com.example.mini_project.domain.repository.UserRepository;
 import com.example.mini_project.global.auth.entity.TokenType;
-import com.example.mini_project.global.auth.repository.RefreshTokenRepository;
+import com.example.mini_project.global.auth.repository.TokenRepository;
 import com.example.mini_project.global.exception.ResourceNotFoundException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -30,7 +30,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService; // 사용자가 있는지 확인
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenRepository tokenRepository;
 
     @Override
     protected void doFilterInternal(
@@ -68,7 +68,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             User user = userRepository.findByEmail(email).get();
 
             // 데이터베이스에 저장되어있는지 확인하기
-            if (refreshTokenRepository.findByUser(user).isEmpty()) {
+            if (tokenRepository.findByUser(user).isEmpty()) {
                 throw new ResourceNotFoundException("비정상적인 이메일 정보. 재확인 바람.");
             }
 

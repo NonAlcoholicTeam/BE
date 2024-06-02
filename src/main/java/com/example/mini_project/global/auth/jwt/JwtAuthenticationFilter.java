@@ -6,9 +6,9 @@ import com.example.mini_project.domain.entity.User;
 import com.example.mini_project.domain.entity.UserDetailsImpl;
 import com.example.mini_project.domain.entity.UserRoleEnum;
 import com.example.mini_project.domain.repository.UserRepository;
-import com.example.mini_project.global.auth.entity.RefreshToken;
+import com.example.mini_project.global.auth.entity.Token;
 import com.example.mini_project.global.auth.entity.TokenType;
-import com.example.mini_project.global.auth.repository.RefreshTokenRepository;
+import com.example.mini_project.global.auth.repository.TokenRepository;
 import com.example.mini_project.global.exception.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -31,15 +31,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final JwtUtil jwtUtil; // 로그인 성공 시, 존맛탱 발급을 위한 의존성 주입
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenRepository tokenRepository;
 
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserRepository userRepository, RefreshTokenRepository refreshTokenRepository) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserRepository userRepository, TokenRepository tokenRepository) {
         this.jwtUtil = jwtUtil;
         setFilterProcessesUrl("/mini/user/login"); // 로그인 처리 경로 설정(매우매우 중요)
         super.setUsernameParameter("email");
         this.userRepository = userRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
@@ -83,11 +83,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throw new ResourceNotFoundException("데이터베이스의 이메일 정보와 서버의 이메일 정보가 다름.");
         }
 
+        String accessTokenValue = accessToken.substring(7);
         String refreshTokenValue = refreshToken.substring(7);
 
         User user = userOptional.get();
-        RefreshToken refreshTokenObj = new RefreshToken(user, refreshTokenValue);
-        refreshTokenRepository.save(refreshTokenObj);
+        Token tokenObj = new Token(user, accessTokenValue, refreshTokenValue);
+        tokenRepository.save(tokenObj);
 
         response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, accessToken);
         jwtUtil.addJwtToCookie(refreshToken, response);

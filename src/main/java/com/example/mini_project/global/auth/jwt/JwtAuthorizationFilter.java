@@ -33,7 +33,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService; // 사용자가 있는지 확인
-    private final TokenService tokenService;
+//    private final TokenService tokenService;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
 
@@ -92,12 +92,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             String newAccessToken = jwtUtil.createAccessToken(
-                    jwtUtil.createTokenPayload(user.getEmail(), user.getRole(), TokenType.ACCESS)).substring(7);
+                    jwtUtil.createTokenPayload(user.getEmail(), user.getRole(), TokenType.ACCESS));
             log.info("새로운 엑세스토큰: " + newAccessToken);
 //            // 새로운 엑세스토큰 업데이트
 //            tokenObj.update(newAccessToken);
 //            tokenRepository.save(tokenObj);
-            tokenService.updateAccessToken(user, newAccessToken);
+//            tokenService.updateAccessToken(user, newAccessToken);
 
             try {
                 // username 담아주기
@@ -138,12 +138,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 throw new ResourceNotFoundException("비정상적인 토큰 정보. 재확인 바람.");
             }
 
-            Token tokenObj = tokenOptional.get();
-
-            // 데이터베이스의 내용과 일치하는지 확인하기
-            if (!tokenObj.getAccessToken().equals(accessToken)) {
-                throw new ResourceNotFoundException("일치하는 토큰 정보 찾을 수 없음. 재확인 바람.");
-            }
+//            Token tokenObj = tokenOptional.get();
+//
+//            // 데이터베이스의 내용과 일치하는지 확인하기
+//            if (!tokenObj.getAccessToken().equals(accessToken)) {
+//                throw new ResourceNotFoundException("일치하는 토큰 정보 찾을 수 없음. 재확인 바람.");
+//            }
 
             try {
                 // username 담아주기

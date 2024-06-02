@@ -26,19 +26,19 @@ public class Token {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @Column(name = "access_token", nullable = false, length = 2048)
-    private String accessToken;
+//    @Column(name = "access_token", nullable = false, length = 2048)
+//    private String accessToken;
 
     @Column(name = "refresh_token", nullable = false, length = 2048)
     private String refreshToken;
 
-    public Token(User user, String accessToken, String refreshToken) {
+    public Token(User user, String refreshToken) {
         this.user = user;
-        this.accessToken = accessToken;
+//        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 
-    public void update(String newAccessToken) {
-        this.accessToken = newAccessToken;
-    }
+//    public void update(String newAccessToken) {
+//        this.accessToken = newAccessToken;
+//    }
 }

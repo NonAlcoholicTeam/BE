@@ -87,7 +87,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String refreshTokenValue = refreshToken.substring(7);
 
         User user = userOptional.get();
-        Token tokenObj = new Token(user, accessTokenValue, refreshTokenValue);
+        Token tokenObj = new Token(user, refreshTokenValue);
         tokenRepository.save(tokenObj);
 
         response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, accessToken);

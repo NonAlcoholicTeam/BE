@@ -34,7 +34,7 @@ public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
-    private final TokenService tokenService;
+//    private final TokenService tokenService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
@@ -58,7 +58,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() { // 인가필터 생성
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, tokenService, userRepository, tokenRepository);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, userRepository, tokenRepository);
     }
 
     @Bean

@@ -1,12 +1,10 @@
 package com.example.mini_project.global.auth.jwt;
 
 import com.example.mini_project.domain.entity.User;
-import com.example.mini_project.domain.entity.UserDetailsServiceImpl;
 import com.example.mini_project.domain.repository.UserRepository;
 import com.example.mini_project.global.auth.entity.Token;
 import com.example.mini_project.global.auth.entity.TokenType;
 import com.example.mini_project.global.auth.repository.TokenRepository;
-import com.example.mini_project.global.auth.service.TokenService;
 import com.example.mini_project.global.exception.ResourceNotFoundException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

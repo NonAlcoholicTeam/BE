@@ -9,6 +9,7 @@ import com.example.mini_project.global.auth.jwt.JwtExceptionFilter;
 import com.example.mini_project.global.auth.jwt.JwtUtil;
 import com.example.mini_project.domain.entity.UserDetailsServiceImpl;
 import com.example.mini_project.global.auth.repository.TokenRepository;
+import com.example.mini_project.global.auth.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -31,7 +33,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsService userDetailsService;
+    private final TokenService tokenService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
@@ -55,7 +58,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() { // 인가필터 생성
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, userRepository, tokenRepository);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, tokenService, userRepository, tokenRepository);
     }
 
     @Bean

@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Slf4j
-@Transactional
 @Service
 @AllArgsConstructor
 public class TokenServiceImpl implements TokenService {
@@ -20,6 +19,7 @@ public class TokenServiceImpl implements TokenService {
     private final TokenRepository tokenRepository;
 
     @Override
+    @Transactional
     public void updateAccessToken(User user, String newAccessToken) {
         Optional<Token> tokenOptional = tokenRepository.findByUser(user);
 

@@ -6,6 +6,7 @@ import com.example.mini_project.domain.repository.UserRepository;
 import com.example.mini_project.global.auth.entity.Token;
 import com.example.mini_project.global.auth.entity.TokenType;
 import com.example.mini_project.global.auth.repository.TokenRepository;
+import com.example.mini_project.global.auth.service.TokenService;
 import com.example.mini_project.global.exception.ResourceNotFoundException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -19,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -30,7 +32,8 @@ import java.util.Optional;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService; // 사용자가 있는지 확인
+    private final UserDetailsService userDetailsService; // 사용자가 있는지 확인
+    private final TokenService tokenService;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
 
@@ -91,9 +94,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String newAccessToken = jwtUtil.createAccessToken(
                     jwtUtil.createTokenPayload(user.getEmail(), user.getRole(), TokenType.ACCESS)).substring(7);
             log.info("새로운 엑세스토큰: " + newAccessToken);
-            // 새로운 엑세스토큰 업데이트
-            tokenObj.update(newAccessToken);
-            tokenRepository.save(tokenObj);
+//            // 새로운 엑세스토큰 업데이트
+//            tokenObj.update(newAccessToken);
+//            tokenRepository.save(tokenObj);
+            tokenService.updateAccessToken(user, newAccessToken);
 
             try {
                 // username 담아주기

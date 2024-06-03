@@ -7,6 +7,7 @@ import com.example.mini_project.domain.entity.UserDetailsImpl;
 import com.example.mini_project.domain.entity.UserRoleEnum;
 import com.example.mini_project.domain.repository.UserRepository;
 import com.example.mini_project.global.auth.entity.TokenType;
+import com.example.mini_project.global.exception.DuplicationException;
 import com.example.mini_project.global.exception.ResourceNotFoundException;
 import com.example.mini_project.global.redis.utils.RedisUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,10 +78,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String accessToken = jwtUtil.createAccessToken(jwtUtil.createTokenPayload(username, role, TokenType.ACCESS));
         String refreshToken = jwtUtil.createRefreshToken(jwtUtil.createTokenPayload(username, role, TokenType.REFRESH));
 
-        Optional<User> userOptional = userRepository.findByEmail(username);
+        userRepository.findByEmail(username).orElseThrow(
+                () ->  new ResourceNotFoundException("데이터베이스의 이메일 정보와 서버의 이메일 정보가 다름.")
+        );
 
-        if (userOptional.isEmpty()) {
-            throw new ResourceNotFoundException("데이터베이스의 이메일 정보와 서버의 이메일 정보가 다름.");
+        if (redisUtils.getData(username) != null) {
+            throw new DuplicationException("이미 로그인되어있는 사용자! 공격자 확인 요망");
         }
 
 //        String accessTokenValue = accessToken.substring(7);

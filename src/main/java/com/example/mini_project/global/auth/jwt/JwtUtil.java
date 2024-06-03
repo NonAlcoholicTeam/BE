@@ -48,8 +48,8 @@ public class JwtUtil {
     private final long REFRESH_TOKEN_TIME = 60 * 60 * 24 * 7 * 1000L; // 7일
 
     private final SecretKey secretKey;
-    private Key key;
-    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+//    private Key key;
+//    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     // 로그 세팅
     public static final Logger logger = LoggerFactory.getLogger("jwt 발급 및 처리 로직");
@@ -145,6 +145,7 @@ public class JwtUtil {
                         .compact();
     }
 
+    // 토큰 타입 확인
     public String getTokenType(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -153,6 +154,17 @@ public class JwtUtil {
                 .getPayload()
                 .get(TOKEN_TYPE, String.class);
     }
+
+    // 토큰 만료 여부긴 한데, 얘는 필요없을 것 같기도?
+//    public Boolean isTokenExpired(String token) {
+//        return Jwts.parser()
+//                .verifyWith(secretKey)
+//                .build()
+//                .parseSignedClaims(token)
+//                .getPayload()
+//                .getExpiration()
+//                .before(new Date());
+//    }
 
 
     // cookie에 리프레시 토큰 저장

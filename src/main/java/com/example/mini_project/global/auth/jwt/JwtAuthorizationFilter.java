@@ -107,6 +107,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 //            tokenObj.update(newAccessToken);
 //            tokenRepository.save(tokenObj);
 //            tokenService.updateAccessToken(user, newAccessToken);
+            // 새로운 리프레쉬토큰 업데이트
+            redisUtils.setData(email, newRefreshToken.substring(7));
 
             try {
                 // username 담아주기

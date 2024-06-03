@@ -88,8 +88,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 //        String accessTokenValue = accessToken.substring(7);
         String refreshTokenValue = refreshToken.substring(7);
+        log.info("초기 리프레쉬토큰: " + refreshTokenValue);
 
-        // username(email) - refreshToken 저장
+        // username(email) - refreshToken 덮어씌우기 저장
         redisUtils.setData(username, refreshTokenValue);
 
 //        User user = userOptional.get();

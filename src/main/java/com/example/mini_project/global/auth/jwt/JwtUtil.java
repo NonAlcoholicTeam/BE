@@ -4,9 +4,7 @@ import com.example.mini_project.domain.entity.UserRoleEnum;
 import com.example.mini_project.global.auth.entity.TokenPayload;
 import com.example.mini_project.global.auth.entity.TokenType;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,8 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
@@ -42,10 +38,10 @@ public class JwtUtil {
 
     // 토큰 만료시간
 //    private final long TOKEN_EXPIRE_TIME = 60 * 60 * 1000L; // 60분
-    private final long TOKEN_TIME = 60 * 60 * 1000L; // 임시로 1시간
+    private final long ACCESS_TOKEN_TIME = 60 * 1000L; // 임시로 1분
 //            24 * 60 * 60 * 1000L; // 하루
     // Refresh 토큰 만료시간
-//    private final long REFRESH_TOKEN_TIME = 60 * 60 * 24 * 7 * 1000L; // 7일
+    private final long REFRESH_TOKEN_TIME = 60 * 60 * 24 * 7 * 1000L; // 7일
 
     private final SecretKey secretKey;
 //    private Key key;
@@ -75,11 +71,13 @@ public class JwtUtil {
      */
     public TokenPayload createTokenPayload(String email, UserRoleEnum role, TokenType tokenType)  {
         Date date = new Date();
+        long tokenTime = TokenType.ACCESS.equals(tokenType) ? ACCESS_TOKEN_TIME : REFRESH_TOKEN_TIME;
+
         return new TokenPayload(
                 email,
                 UUID.randomUUID().toString(),
                 date,
-                new Date(date.getTime() + TOKEN_TIME),
+                new Date(date.getTime() + tokenTime),
                 role,
                 tokenType
         );

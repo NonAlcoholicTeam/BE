@@ -13,12 +13,12 @@ public class RedisUtils {
     // key : username(email), value : refreshToken
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void setData(String key, String value, Long expiredTime){
-        redisTemplate.opsForValue().set(key, value, expiredTime, TimeUnit.MILLISECONDS);
+    public void setData(String key, String value){
+        redisTemplate.opsForValue().set(key, value);
     }
 
     public String getData(String key){
-        return (String) redisTemplate.opsForValue().get(key);
+        return redisTemplate.opsForValue().get(key);
     }
 
     public void deleteData(String key){

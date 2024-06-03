@@ -23,7 +23,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Optional;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 @RequiredArgsConstructor
@@ -72,10 +71,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     () -> new ResourceNotFoundException("비정상적인 이메일 정보. 재확인 바람.")
             );
 
-
-//            User user = userOptional.get();
-//            Optional<Token> tokenOptional = tokenRepository.findByUser(user);
-
             // redis에 저장된 리프레쉬토큰 갖고오기
             String refreshTokenValue = redisUtils.getData(email);
 
@@ -103,10 +98,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String newRefreshToken = jwtUtil.createRefreshToken(
                     jwtUtil.createTokenPayload(user.getEmail(), user.getRole(), TokenType.REFRESH));
             log.info("새로운 리프레쉬토큰: " + newRefreshToken);
-//            // 새로운 엑세스토큰 업데이트
-//            tokenObj.update(newAccessToken);
-//            tokenRepository.save(tokenObj);
-//            tokenService.updateAccessToken(user, newAccessToken);
+
             // 새로운 리프레쉬토큰 업데이트
             redisUtils.setData(email, newRefreshToken.substring(7));
 
@@ -168,32 +160,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 return;
             }
         }
-
-
-
-        // 현재는 쿠키로부터 갖고오지만, 만약 헤더로부터 갖고온다면 맞춰 수정해야겠지
-//        String token = jwtUtil.getTokenFromRequestCookie(request);
-//
-//        if (StringUtils.hasText(token)) {
-//            token = jwtUtil.substringToken(token);
-//            log.info(token);
-//
-//            // 날짜 만료로 인한 리프레쉬토큰 요청이 포함되는 부분
-//            if (!jwtUtil.validateToken(token)) {
-//                log.error("Token Error");
-//                return;
-//            }
-//
-//            Claims info = jwtUtil.getUserInfoFromToken(token);
-//
-//            try {
-//                // username 담아주기
-//                setAuthentication(info.getSubject());
-//            } catch (Exception e) {
-//                log.error(e.getMessage());
-//                return;
-//            }
-//        }
 
         // 다음 필터로 넘어가라는 의미
         // 이걸 이용해서 리프레쉬 토큰에 대한 로직 짜면 될 것 같은데

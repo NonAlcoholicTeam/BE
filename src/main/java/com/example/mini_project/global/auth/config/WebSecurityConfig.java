@@ -32,7 +32,6 @@ public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
-//    private final TokenService tokenService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final UserRepository userRepository;
     private final RedisUtils redisUtils;
@@ -74,14 +73,7 @@ public class WebSecurityConfig {
                         authorizeHttpRequests
                         .requestMatchers("swagger-ui/**", "/v3/**").permitAll() // Swagger 관련
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-//                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger UI 접근 허용
                         .requestMatchers(HttpMethod.POST, "/mini/user/signup").permitAll()
-//                                .requestMatchers(HttpMethod.GET, "/sail/signup").permitAll()
-//                                .requestMatchers("/sail/login").permitAll()
-//                                .requestMatchers("/sail/user/login").permitAll()
-//                                .requestMatchers("/sail/user/email-verify").permitAll()
-//                                .requestMatchers("/sail/user/email-check").permitAll()
-//                                .requestMatchers("/sail/authInfo").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리 요구
         );
 
@@ -93,28 +85,9 @@ public class WebSecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
 
-//        http.logout(logout -> logout
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/mini/user/logout"))
-//                .logoutSuccessUrl("/"));
-
-        // 로그인 사용
-//        http.formLogin((formLogin) ->
-//                formLogin
-//                        // 로그인 View 제공 (GET /api/user/login-page)
-//                        .loginPage("/sail/login")
-//                        // 로그인 처리 (POST /api/user/login)
-//                        .loginProcessingUrl("/sail/user/login") // 둘을 똑같이 작성하면 안 됨
-//                        // 로그인 처리 후 성공 시 URL
-//                        .defaultSuccessUrl("/")
-//                        // 로그인 처리 후 실패 시 URL
-//                        .failureUrl("/")
-//                        .permitAll()
-//        );
-
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class); // 인가 처리 필터
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // 인증(+ 로그인) 처리 필터
         http.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class); // JwtAuthenticationFilter 앞단에 JwtExceptionFilter를 위치시키겠다는 설정
-
 
         return http.build();
     }

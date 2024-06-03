@@ -37,37 +37,20 @@ public class JwtUtil {
     public static final String BEARER_PREFIX = "Bearer ";
 
     // Access 토큰 만료시간
-//    private final long TOKEN_EXPIRE_TIME = 60 * 60 * 1000L; // 60분
     private final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L; // 60분
     // Refresh 토큰 만료시간
     private final long REFRESH_TOKEN_TIME = 60 * 60 * 24 * 7 * 1000L; // 7일
 
     private final SecretKey secretKey;
-//    private Key key;
-//    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     // 로그 세팅
     public static final Logger logger = LoggerFactory.getLogger("jwt 발급 및 처리 로직");
-
-//    @PostConstruct
-//    public void init() {
-//        byte[] bytes = Base64.getDecoder().decode(secretKey);
-//        key = Keys.hmacShaKeyFor(bytes);
-//    }
 
     public JwtUtil(@Value("${jwt.secret.key}") String secret) {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
     // 토큰 생성을 위한 페이로드 생성 메소드
-
-    /**
-     * (1) 얘를
-     * @param email
-     * @param role
-     * @param tokenType
-     * @return
-     */
     public TokenPayload createTokenPayload(String email, UserRoleEnum role, TokenType tokenType)  {
         Date date = new Date();
         long tokenTime = TokenType.ACCESS.equals(tokenType) ? ACCESS_TOKEN_TIME : REFRESH_TOKEN_TIME;
@@ -81,38 +64,6 @@ public class JwtUtil {
                 tokenType
         );
     }
-
-//    // 토큰 생성
-//    public String createToken(String username, UserRoleEnum role) {
-//        Date date = new Date();
-//
-//        return BEARER_PREFIX +
-//                Jwts.builder()
-//                        .setSubject(username) // 사용자 식별값
-//                        .claim(AUTHORIZATION_KEY, role) // 사용자 권한
-////                        .setExpiration(new Date(date.getTime() + TOKEN_EXPIRE_TIME)) // 만료 시간
-//                        .setIssuedAt(date) // 발급일
-//                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
-//                        .compact();
-//    }
-
-    /**
-     * (2) 여기에 넣어서 토큰 생성
-     * @param payload
-     * @return
-     */
-    // 페이로드 기반 토큰 생성기
-//    public String createToken(TokenPayload payload) {
-//        return BEARER_PREFIX +
-//                Jwts.builder()
-//                        .setSubject(payload.getSub()) // 사용자 식별자값(ID)
-//                        .claim(AUTHORIZATION_KEY, payload.getRole()) // 사용자 권한
-//                        .setExpiration(payload.getExpiresAt()) // 만료 시간
-//                        .setIssuedAt(payload.getIat()) // 발급일
-//                        .setId(payload.getJti()) // JWT ID
-//                        .signWith(key, signatureAlgorithm) // 암호화 Key & 알고리즘
-//                        .compact();
-//    }
 
     // 11.5 -> 12.3
     public String createAccessToken(TokenPayload payload) {
@@ -141,16 +92,6 @@ public class JwtUtil {
                         .compact();
     }
 
-    // 토큰 타입 확인
-    public String getTokenType(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .get(TOKEN_TYPE, String.class);
-    }
-
     public Date getTokenIat(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -159,18 +100,6 @@ public class JwtUtil {
                 .getPayload()
                 .getIssuedAt();
     }
-
-    // 토큰 만료 여부긴 한데, 얘는 필요없을 것 같기도?
-//    public Boolean isTokenExpired(String token) {
-//        return Jwts.parser()
-//                .verifyWith(secretKey)
-//                .build()
-//                .parseSignedClaims(token)
-//                .getPayload()
-//                .getExpiration()
-//                .before(new Date());
-//    }
-
 
     // cookie에 리프레시 토큰 저장
     public void addJwtToCookie(String token, HttpServletResponse res) {
@@ -187,11 +116,6 @@ public class JwtUtil {
         }
     }
 
-    /**
-     * 토큰 앞글자 잘라내기
-     * @param tokenValue
-     * @return
-     */
     // jwt 토큰 substring
     public String substringToken(String tokenValue) {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
@@ -236,26 +160,6 @@ public class JwtUtil {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-    }
-
-    // HttpServletRequest 객체에서 cookie의 값인 jwt 가져오기
-    public String getTokenFromRequestCookie(HttpServletRequest req) {
-        Cookie[] cookies = req.getCookies();
-
-        if(cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
-                    return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8); // Encode 되어 넘어간 Value 다시 Decode
-                }
-//                if (cookie.getName().equals(ACCESS_TOKEN_HEADER)) {
-//                    return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8); // Encode 되어 넘어간 Value 다시 Decode
-//                }
-//                if (cookie.getName().equals(REFRESH_TOKEN_HEADER)) {
-//                    return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8); // Encode 되어 넘어간 Value 다시 Decode
-//                }
-            }
-        }
-        return null;
     }
 
     // 쿠키에서 엑세스 토큰 갖고오기

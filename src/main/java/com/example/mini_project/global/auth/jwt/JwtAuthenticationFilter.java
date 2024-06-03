@@ -2,7 +2,6 @@ package com.example.mini_project.global.auth.jwt;
 
 import com.example.mini_project.domain.dto.UserLoginRequestDto;
 import com.example.mini_project.domain.dto.UserLoginResponseDto;
-import com.example.mini_project.domain.entity.User;
 import com.example.mini_project.domain.entity.UserDetailsImpl;
 import com.example.mini_project.domain.entity.UserRoleEnum;
 import com.example.mini_project.domain.repository.UserRepository;
@@ -24,14 +23,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Optional;
 
 @Slf4j(topic = "로그인 및 JWT 생성 + 인증")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final JwtUtil jwtUtil; // 로그인 성공 시, 존맛탱 발급을 위한 의존성 주입
     private final UserRepository userRepository;
-    //    private final TokenRepository tokenRepository;
     private final RedisUtils redisUtils;
 
 
@@ -70,10 +67,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
-        // 기존 버전
-//        String token = jwtUtil.createToken(username, role);
-//        jwtUtil.addJwtToCookie(token, response);
-
         // 신 버전
         String accessToken = jwtUtil.createAccessToken(jwtUtil.createTokenPayload(username, role, TokenType.ACCESS));
         String refreshToken = jwtUtil.createRefreshToken(jwtUtil.createTokenPayload(username, role, TokenType.REFRESH));
@@ -93,15 +86,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // username(email) - refreshToken 덮어씌우기 저장
         redisUtils.setData(username, refreshTokenValue);
 
-//        User user = userOptional.get();
-//        Token tokenObj = new Token(user, refreshTokenValue);
-
         response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, accessToken);
         jwtUtil.addJwtToCookie(refreshToken, response);
-
-//        response.setStatus(HttpStatus.OK.value());
-//        response.setCharacterEncoding("UTF-8"); // 클라이언트 전달 메시지 인코딩
-//        response.getWriter().write("로그인 성공 및 토큰이 생성됐습니다");
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json;charset=UTF-8");
 
@@ -120,8 +106,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 로그인 실패로 상태코드 반환
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//        response.setCharacterEncoding("UTF-8"); // 클라이언트 전달 메시지 인코딩
-//        response.getWriter().write("로그인에 실패했습니다");
         response.setContentType("application/json;charset=UTF-8");
 
         ObjectMapper objectMapper = new ObjectMapper();

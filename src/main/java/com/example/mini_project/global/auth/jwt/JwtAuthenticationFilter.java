@@ -4,6 +4,11 @@ import com.example.mini_project.domain.dto.UserLoginRequestDto;
 import com.example.mini_project.domain.dto.UserLoginResponseDto;
 import com.example.mini_project.domain.entity.UserDetailsImpl;
 import com.example.mini_project.domain.entity.UserRoleEnum;
+import com.example.mini_project.domain.repository.UserRepository;
+import com.example.mini_project.global.auth.entity.TokenType;
+import com.example.mini_project.global.exception.DuplicationException;
+import com.example.mini_project.global.exception.ResourceNotFoundException;
+import com.example.mini_project.global.redis.utils.RedisUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,11 +28,16 @@ import java.io.PrintWriter;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final JwtUtil jwtUtil; // 로그인 성공 시, 존맛탱 발급을 위한 의존성 주입
+    private final UserRepository userRepository;
+    private final RedisUtils redisUtils;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserRepository userRepository, RedisUtils redisUtils) {
         this.jwtUtil = jwtUtil;
         setFilterProcessesUrl("/mini/user/login"); // 로그인 처리 경로 설정(매우매우 중요)
         super.setUsernameParameter("email");
+        this.userRepository = userRepository;
+        this.redisUtils = redisUtils;
     }
 
     @Override
@@ -57,12 +67,27 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
-        String token = jwtUtil.createToken(username, role);
-        jwtUtil.addJwtToCookie(token, response);
+        // 신 버전
+        String accessToken = jwtUtil.createAccessToken(jwtUtil.createTokenPayload(username, role, TokenType.ACCESS));
+        String refreshToken = jwtUtil.createRefreshToken(jwtUtil.createTokenPayload(username, role, TokenType.REFRESH));
 
-//        response.setStatus(HttpStatus.OK.value());
-//        response.setCharacterEncoding("UTF-8"); // 클라이언트 전달 메시지 인코딩
-//        response.getWriter().write("로그인 성공 및 토큰이 생성됐습니다");
+        userRepository.findByEmail(username).orElseThrow(
+                () ->  new ResourceNotFoundException("데이터베이스의 이메일 정보와 서버의 이메일 정보가 다름.")
+        );
+
+        if (redisUtils.getData(username) != null) {
+            throw new DuplicationException("이미 로그인되어있는 사용자! 공격자 확인 요망");
+        }
+
+//        String accessTokenValue = accessToken.substring(7);
+        String refreshTokenValue = refreshToken.substring(7);
+        log.info("초기 리프레쉬토큰: " + refreshTokenValue);
+
+        // username(email) - refreshToken 덮어씌우기 저장
+        redisUtils.setData(username, refreshTokenValue);
+
+        response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, accessToken);
+        jwtUtil.addJwtToCookie(refreshToken, response);
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json;charset=UTF-8");
 
@@ -81,8 +106,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 로그인 실패로 상태코드 반환
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//        response.setCharacterEncoding("UTF-8"); // 클라이언트 전달 메시지 인코딩
-//        response.getWriter().write("로그인에 실패했습니다");
         response.setContentType("application/json;charset=UTF-8");
 
         ObjectMapper objectMapper = new ObjectMapper();

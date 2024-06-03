@@ -155,6 +155,15 @@ public class JwtUtil {
                 .get(TOKEN_TYPE, String.class);
     }
 
+    public Date getTokenIat(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getIssuedAt();
+    }
+
     // 토큰 만료 여부긴 한데, 얘는 필요없을 것 같기도?
 //    public Boolean isTokenExpired(String token) {
 //        return Jwts.parser()

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -35,7 +36,7 @@ public class WebSecurityConfig {
 //    private final TokenService tokenService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
+    private final RedisTemplate<String, String> redisTemplate;
     // 필터단 예외
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 인증 예외 커스텀 메시지 던지기
     private final JwtAccessDenyHandler jwtAccessDenyHandler; // 인가 예외 커스텀 메시지 던지기(역할별 접근권한같은)
@@ -49,7 +50,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception { // 인증필터 생성
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, userRepository, tokenRepository);
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, userRepository, redisTemplate);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration)); // 인증매니저 설정
         return filter;
     }

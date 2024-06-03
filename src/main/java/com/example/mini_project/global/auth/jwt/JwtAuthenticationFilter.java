@@ -16,6 +16,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,15 +32,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final JwtUtil jwtUtil; // 로그인 성공 시, 존맛탱 발급을 위한 의존성 주입
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
+    //    private final TokenRepository tokenRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserRepository userRepository, TokenRepository tokenRepository) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserRepository userRepository, RedisTemplate<String, String> redisTemplate) {
         this.jwtUtil = jwtUtil;
         setFilterProcessesUrl("/mini/user/login"); // 로그인 처리 경로 설정(매우매우 중요)
         super.setUsernameParameter("email");
         this.userRepository = userRepository;
-        this.tokenRepository = tokenRepository;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -88,7 +90,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         User user = userOptional.get();
         Token tokenObj = new Token(user, refreshTokenValue);
-        tokenRepository.save(tokenObj);
 
         response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, accessToken);
         jwtUtil.addJwtToCookie(refreshToken, response);

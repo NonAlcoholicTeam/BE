@@ -20,7 +20,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -63,6 +65,36 @@ public class JwtUtil {
                 role,
                 tokenType
         );
+    }
+
+    // 시간을 동일하게 맞춰주기 위한 동시 생성 메소드
+    // 인덱스 0: accessTokenPayload, 인덱스 1: refreshTokenPayload
+    public List<TokenPayload> createTokenPayloads(String email, UserRoleEnum role) {
+        List<TokenPayload> tokenPayloads = new ArrayList<>();
+        Date date = new Date();
+
+        TokenPayload accessTokenPayload = new TokenPayload(
+                email,
+                UUID.randomUUID().toString(),
+                date,
+                new Date(date.getTime() + ACCESS_TOKEN_TIME),
+                role,
+                TokenType.ACCESS
+        );
+
+        TokenPayload refreshTokenPayload = new TokenPayload(
+                email,
+                UUID.randomUUID().toString(),
+                date,
+                new Date(date.getTime() + REFRESH_TOKEN_TIME),
+                role,
+                TokenType.REFRESH
+        );
+
+        tokenPayloads.add(accessTokenPayload);
+        tokenPayloads.add(refreshTokenPayload);
+
+        return tokenPayloads;
     }
 
     // 11.5 -> 12.3

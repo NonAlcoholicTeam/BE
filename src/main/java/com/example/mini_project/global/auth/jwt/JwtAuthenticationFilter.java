@@ -5,6 +5,7 @@ import com.example.mini_project.domain.dto.UserLoginResponseDto;
 import com.example.mini_project.domain.entity.UserDetailsImpl;
 import com.example.mini_project.domain.entity.UserRoleEnum;
 import com.example.mini_project.domain.repository.UserRepository;
+import com.example.mini_project.global.auth.entity.TokenPayload;
 import com.example.mini_project.global.auth.entity.TokenType;
 import com.example.mini_project.global.exception.DuplicationException;
 import com.example.mini_project.global.exception.ResourceNotFoundException;
@@ -23,6 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 @Slf4j(topic = "로그인 및 JWT 생성 + 인증")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -68,8 +70,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
         // 신 버전
-        String accessToken = jwtUtil.createAccessToken(jwtUtil.createTokenPayload(username, role, TokenType.ACCESS));
-        String refreshToken = jwtUtil.createRefreshToken(jwtUtil.createTokenPayload(username, role, TokenType.REFRESH));
+        // 인덱스 0: accessTokenPayload, 인덱스 1: refreshTokenPayload
+        List<TokenPayload> tokenPayloads = jwtUtil.createTokenPayloads(username, role);
+
+        String accessToken = jwtUtil.createAccessToken(tokenPayloads.get(0));
+        String refreshToken = jwtUtil.createRefreshToken(tokenPayloads.get(1));
 
         userRepository.findByEmail(username).orElseThrow(
                 () ->  new ResourceNotFoundException("데이터베이스의 이메일 정보와 서버의 이메일 정보가 다름.")

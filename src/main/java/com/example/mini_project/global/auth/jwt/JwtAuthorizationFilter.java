@@ -2,6 +2,7 @@ package com.example.mini_project.global.auth.jwt;
 
 import com.example.mini_project.domain.entity.User;
 import com.example.mini_project.domain.repository.UserRepository;
+import com.example.mini_project.global.auth.entity.TokenPayload;
 import com.example.mini_project.global.auth.entity.TokenType;
 import com.example.mini_project.global.exception.ResourceNotFoundException;
 import com.example.mini_project.global.redis.utils.RedisUtils;
@@ -23,6 +24,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 @RequiredArgsConstructor
@@ -91,12 +93,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 throw new ResourceNotFoundException("블랙리스트 처리된 리프레쉬 토큰 요구 확인.");
             }
 
-            String newAccessToken = jwtUtil.createAccessToken(
-                    jwtUtil.createTokenPayload(user.getEmail(), user.getRole(), TokenType.ACCESS));
+            // 인덱스 0: accessTokenPayload, 인덱스 1: refreshTokenPayload
+            List<TokenPayload> tokenPayloads = jwtUtil.createTokenPayloads(user.getEmail(), user.getRole());
+
+            String newAccessToken = jwtUtil.createAccessToken(tokenPayloads.get(0));
+            String newRefreshToken = jwtUtil.createRefreshToken(tokenPayloads.get(1));
+
+//            String newAccessToken = jwtUtil.createAccessToken(
+//                    jwtUtil.createTokenPayload(user.getEmail(), user.getRole(), TokenType.ACCESS));
             log.info("새로운 엑세스토큰: " + newAccessToken);
 
-            String newRefreshToken = jwtUtil.createRefreshToken(
-                    jwtUtil.createTokenPayload(user.getEmail(), user.getRole(), TokenType.REFRESH));
+//            String newRefreshToken = jwtUtil.createRefreshToken(
+//                    jwtUtil.createTokenPayload(user.getEmail(), user.getRole(), TokenType.REFRESH));
             log.info("새로운 리프레쉬토큰: " + newRefreshToken);
 
             // 새로운 리프레쉬토큰 업데이트

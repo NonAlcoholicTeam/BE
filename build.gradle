@@ -11,6 +11,10 @@ java {
     sourceCompatibility = '17'
 }
 
+jar {
+    enabled = false
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -33,12 +37,18 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // JWT
-    compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+    compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.12.3'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.12.3'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.12.3'
 
     // 유효성 추가 어노테이션
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
+    // redis 연동
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {

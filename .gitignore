@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 application.yml
 aboutDocker.md
+docker-compose.yml
 
 ### STS ###
 .apt_generated

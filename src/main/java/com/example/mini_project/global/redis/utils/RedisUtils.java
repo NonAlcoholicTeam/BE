@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 public class RedisUtils {
 
-    // key : username(email), value : refreshToken
+    // key : username(email), value : refreshToken or email verification
     private final RedisTemplate<String, String> redisTemplate;
 
     public void setData(String key, String value){

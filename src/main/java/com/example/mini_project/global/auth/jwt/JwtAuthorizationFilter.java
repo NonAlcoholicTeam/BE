@@ -1,9 +1,8 @@
 package com.example.mini_project.global.auth.jwt;
 
-import com.example.mini_project.domain.entity.User;
-import com.example.mini_project.domain.repository.UserRepository;
+import com.example.mini_project.domain.user.entity.User;
+import com.example.mini_project.domain.user.repository.UserRepository;
 import com.example.mini_project.global.auth.entity.TokenPayload;
-import com.example.mini_project.global.auth.entity.TokenType;
 import com.example.mini_project.global.exception.ResourceNotFoundException;
 import com.example.mini_project.global.redis.utils.RedisUtils;
 import io.jsonwebtoken.Claims;

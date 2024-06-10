@@ -3,7 +3,6 @@ package com.example.mini_project.domain.email.service;
 import com.example.mini_project.domain.email.dto.EmailCheckDto;
 import com.example.mini_project.domain.email.dto.EmailRequestDto;
 import com.example.mini_project.domain.user.repository.UserRepository;
-import com.example.mini_project.global.exception.DuplicationException;
 import com.example.mini_project.global.redis.utils.RedisUtils;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

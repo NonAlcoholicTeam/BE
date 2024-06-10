@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
-public class EmailResponseDto {
+public class EmailCheckDto {
     @Email
     @NotEmpty(message = "입력했던 이메일 확인")
     private String email;
